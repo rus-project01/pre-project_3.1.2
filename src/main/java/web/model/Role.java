@@ -1,8 +1,12 @@
 package web.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,8 +19,10 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     @Column(name = "name", unique = true)
-    @Basic(fetch = FetchType.LAZY)
     private String name;
+
+    @ManyToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    private List<User> users;
 
     public Role() {
     }
@@ -44,6 +50,14 @@ public class Role implements GrantedAuthority {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Override

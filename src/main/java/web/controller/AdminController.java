@@ -40,18 +40,18 @@ public class AdminController {
     }
 
     @PostMapping(value = "/edit")
-    public String editUser(@ModelAttribute("listPersons") User user, @RequestParam("role") String roles, @RequestParam("id") Long id, ModelMap model) {
-        roleServiceImpl.updateRole(new Role(id, roles));
+    public String editUser(@ModelAttribute("listPersons") User user, @RequestParam("role") String roles, ModelMap model) {
+        user.setRole(roleServiceImpl.findByName(roles));
         userServiceImpl.updateUser(user);
         model.addAttribute("listPersons", userServiceImpl.listUsers());
         return "redirect:/admin/";
     }
 
     @PostMapping(value = "/newuser")
-    public String createUser(@ModelAttribute("listPersons") User user, @RequestParam("prava") Role prava, ModelMap model) {
+    public String createUser(@ModelAttribute("listPersons") User user, @RequestParam("prava") String prava, ModelMap model) {
         if(userServiceImpl.checkUser(user)) {
+            user.setRole(roleServiceImpl.findByName(prava));
             userServiceImpl.add(user);
-            roleServiceImpl.add(prava);
             model.addAttribute("listPersons", userServiceImpl.listUsers());
             return "redirect:/admin/";
         }
